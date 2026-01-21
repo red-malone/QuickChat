@@ -2,16 +2,21 @@ import React, { useState } from "react";
 import RightSidebar from "../components/RightSidebar";
 import ChatContainer from "../components/ChatContainer";
 import SideBar from "../components/SideBar";
+import clsx from "clsx";
+
 const HomePage = () => {
   const [selectedUser, setSelectedUser] = useState(false);
   return (
-    <div className="border w-full h-screen sm:px-[15%] sm:py-[5%]">
+    <div className="w-full h-screen px-4 py-4 sm:px-[5%] sm:py-[2%] lg:px-[10%] lg:py-[3%]">
       <div
-        className={`grid grid-cols-1 relative backdrop-blur-xl border-2 border-gray-600 rounded-2xl overflown-hidden h-[100%] ${selectedUser ? "md:grid-cols-[1fr_1.5fr_1fr] xl:grid-cols-[1fr_2fr_1fr]" : "md:grid-cols-2"}`}
+        className={clsx(
+          'grid relative backdrop-blur-xl border border-gray-700 rounded-3xl h-full overflow-hidden',
+          selectedUser ? "grid-cols-1 md:grid-cols-[280px_1fr_320px]" : "grid-cols-1 md:grid-cols-[280px_1fr]"
+        )}
       >
-        <SideBar />
-        <ChatContainer />
-        <RightSidebar />
+        <SideBar selectedUser={selectedUser} setSelectedUser={setSelectedUser} />
+        <ChatContainer selectedUser={selectedUser} setSelectedUser={setSelectedUser} />
+        <RightSidebar selectedUser={selectedUser} setSelectedUser={setSelectedUser} />
       </div>
     </div>
   );
