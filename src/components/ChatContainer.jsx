@@ -1,5 +1,5 @@
 import React from "react";
-import assets from "../assets/assets";
+import assets, { messagesDummyData } from "../assets/assets";
 import clsx from "clsx";
 
 const ChatContainer = ({selectedUser,setSelectedUser}) => {
@@ -37,6 +37,13 @@ const ChatContainer = ({selectedUser,setSelectedUser}) => {
       {/* Messages Area */}
       <div className="flex-1 overflow-y-auto p-4">
         {/* Messages will be rendered here */}
+        {
+            messagesDummyData.map((message, index) => {
+                <div key={index}>
+                    <p className="text-sm text-gray-400">{message.sender}: {message.text}</p>
+                </div>
+            })
+        }
       </div>
     </div>
   ) : (
