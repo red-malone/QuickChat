@@ -27,12 +27,17 @@ const LoginPage = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    if(currState==="Sign Up" && !isDataSubmitted){
-
-      setIsDataSubmitted(true);
-      return
-  }
-  login(currState==="Sign Up"?'signup':'login',{fullName,email,password,bio});
+    const payload = { fullName, email, password, bio };
+    if (currState === "Sign Up") {
+      (async () => {
+        const res = await login('signup', payload);
+        if (res && res.success) {
+          setIsDataSubmitted(true);
+        }
+      })();
+      return;
+    }
+    login('login', { email, password });
 }
 
   return (

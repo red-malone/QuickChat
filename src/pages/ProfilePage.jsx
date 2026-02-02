@@ -1,8 +1,11 @@
 import React, { useState } from 'react'
 import assets from '../assets/assets'
 import clsx from 'clsx'
+import { AuthContext } from '../../context/AuthContext'
 
 const ProfilePage = () => {
+  const {authUSer,updateProfile}=useContext(AuthContext);
+
   const [profilePic, setProfilePic] = useState(assets.avatar_icon)
   const [fullName, setFullName] = useState("John Doe")
   const [email, setEmail] = useState("john@example.com")
