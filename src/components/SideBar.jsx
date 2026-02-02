@@ -1,10 +1,12 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import assets ,{userDummyData}from '../assets/assets'
 import { useNavigate } from 'react-router-dom'
 import clsx from 'clsx'
+import { AuthContext } from '../../context/AuthContext'
 
 const SideBar = ({selectedUser,setSelectedUser}) => {
   const navigate=useNavigate();
+  const { logout } = useContext(AuthContext);
   return (
     <div className={clsx('bg-[#8185B2]/10 h-full flex flex-col border-r border-gray-700', selectedUser && 'max-md:hidden')}>
         {/* Header Section */}
@@ -16,7 +18,7 @@ const SideBar = ({selectedUser,setSelectedUser}) => {
                     <div className={clsx('absolute top-full right-0 z-20 w-40 mt-1 p-4 rounded-lg bg-[#282142] border border-gray-700 text-gray-100 hidden group-hover:block shadow-lg')}>
                       <p className='cursor-pointer text-sm hover:text-white transition' onClick={()=>navigate('/profile')}>Edit Profile</p>
                       <hr className='my-2 border-t border-gray-600'/>
-                      <p className='cursor-pointer text-sm hover:text-white transition'>Logout</p>
+                      <p className='cursor-pointer text-sm hover:text-white transition' onClick={() => { logout(); navigate('/login'); }}>Logout</p>
                     </div>
                 </div>
             </div>

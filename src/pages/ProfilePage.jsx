@@ -1,15 +1,15 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import assets from '../assets/assets'
 import clsx from 'clsx'
 import { AuthContext } from '../../context/AuthContext'
 
 const ProfilePage = () => {
-  const {authUSer,updateProfile}=useContext(AuthContext);
+  const { authUser, updateProfile } = useContext(AuthContext);
 
   const [profilePic, setProfilePic] = useState(assets.avatar_icon)
-  const [fullName, setFullName] = useState("John Doe")
-  const [email, setEmail] = useState("john@example.com")
-  const [bio, setBio] = useState("Hi Everyone, I am Using QuickChat")
+  const [fullName, setFullName] = useState("")
+  const [email, setEmail] = useState("")
+  const [bio, setBio] = useState("")
   const [isEditing, setIsEditing] = useState(false)
   const [saveSuccess, setSaveSuccess] = useState(false)
 
@@ -24,12 +24,31 @@ const ProfilePage = () => {
     }
   }
 
-  const handleSave = (e) => {
+  useEffect(() => {
+    if (authUser) {
+      setFullName(authUser.fullName || "")
+      setEmail(authUser.email || "")
+      setBio(authUser.bio || "")
+      setProfilePic(authUser.profilePic || assets.avatar_icon)
+    }
+  }, [authUser])
+
+  const handleSave = async (e) => {
     e.preventDefault()
-    // persist data here if needed
-    setSaveSuccess(true)
-    setIsEditing(false)
-    setTimeout(() => setSaveSuccess(false), 3000)
+    const payload = {
+      fullName,
+      bio,
+    }
+    // only send profilePic if user updated it (not default avatar)
+    if (profilePic && !profilePic.includes('avatar_icon')) {
+      payload.profilePic = profilePic
+    }
+    const res = await updateProfile(payload)
+    if (res && res.success) {
+      setSaveSuccess(true)
+      setIsEditing(false)
+      setTimeout(() => setSaveSuccess(false), 3000)
+    }
   }
 
   return (

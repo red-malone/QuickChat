@@ -8,7 +8,7 @@ axios.defaults.baseURL=BACKEND_URL;
 export const AuthContext = createContext();
 
 export const AuthProvider=({children})=>{
-    const [token, setToken] = useState(localStorage.getItem("token"));
+    const [token, setToken] = useState(sessionStorage.getItem("token"));
     const [authUser, setAuthUser] = useState(null);
     const [onlineUsers, setOnlineUsers] = useState([]);
     const [socket, setSocket] = useState(null);
@@ -45,7 +45,7 @@ export const AuthProvider=({children})=>{
                 connectSocket(data.userData);
                 axios.defaults.headers.common["Authorization"] = `Bearer ${data.token}`
                 setToken(data.token)
-                localStorage.setItem("token", data.token);
+                sessionStorage.setItem("token", data.token);
                 toast.success(data.message)
                 return data;
             }
@@ -57,7 +57,7 @@ export const AuthProvider=({children})=>{
         }
     }
     const logout=()=>{
-        localStorage.removeItem("token");
+        sessionStorage.removeItem("token");
         setToken(null);
         setAuthUser(null);
         setOnlineUsers([]);
@@ -74,10 +74,13 @@ export const AuthProvider=({children})=>{
             if (data.success) {
                 setAuthUser(data.updatedUser);
                 toast.success(data.message)
+                return data;
             }
+            return data;
         } catch (err) {
             console.error("Profile update error:", err);
             toast.error(err?.response?.data?.message || err.message)
+            return null;
         }
     }
 
