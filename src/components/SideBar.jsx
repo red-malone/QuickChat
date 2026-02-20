@@ -1,16 +1,22 @@
-import React, { useContext ,useState} from 'react'
-import assets ,{userDummyData}from '../assets/assets'
+import React, { useContext ,useEffect,useState} from 'react'
+import assets from '../assets/assets'
 import { useNavigate } from 'react-router-dom'
 import clsx from 'clsx'
 import { AuthContext } from '../../context/AuthContext'
 import { ChatContext } from '../../context/ChatContext'
 
-const SideBar = ({selectedUser,setSelectedUser}) => {
+const SideBar = () => {
   const navigate=useNavigate();
   const { logout,onlineUsers } = useContext(AuthContext);
   const { unseenMessages,getUsers,selectedUser,setSelectedUser,users,setUnseenMessages } = useContext(ChatContext);
-  const [input ,setInput]=useState(false);
-  const filteredUsers=input ? users.filter((user) => user.fullName.toLowerCase().includes(input.toLowerCase())) : users;
+  const [input ,setInput]=useState('');
+  const filteredUsers = input
+    ? users.filter((user) => user.fullName.toLowerCase().includes(input.toLowerCase()))
+    : users;
+  useEffect(()=>{
+    getUsers();
+
+  },[onlineUsers])
   return (
     <div className={clsx('bg-[#8185B2]/10 h-full flex flex-col border-r border-gray-700', selectedUser && 'max-md:hidden')}>
         {/* Header Section */}
@@ -43,14 +49,14 @@ const SideBar = ({selectedUser,setSelectedUser}) => {
 
         {/* Users List Section */}
         <div className='flex-1 overflow-y-auto px-2 py-2'>
-            {userDummyData.map((user,index)=>{
+            {filteredUsers.map((user,index)=>{
                 return(
                     <div 
                       onClick={()=>{setSelectedUser(user)}} 
                       key={index} 
                       className={clsx(
                         'flex items-center gap-3 p-3 mx-2 rounded-lg cursor-pointer transition duration-200 hover:bg-[#282142]/30',
-                        selectedUser?.id === user._id && 'bg-[#282142]/60 border border-violet-600/30'
+                        selectedUser?._id === user._id && 'bg-[#282142]/60 border border-violet-600/30'
                       )}
                     >
                         <img src={user?.profilePic || assets.avatar_icon} alt='' className='w-10 h-10 rounded-full flex-shrink-0' />
@@ -59,14 +65,14 @@ const SideBar = ({selectedUser,setSelectedUser}) => {
                                 {user.fullName}
                             </p>
                             {
-                                index<3
+                                onlineUsers.includes(user._id)
                                   ? <span className='text-green-400 text-xs'>Online</span>
                                   : <span className='text-red-400 text-xs'>Offline</span>
                             }
                         </div>
                         {
-                            index>2 && <p className='text-xs w-5 h-5 flex-shrink-0 flex justify-center items-center rounded-full bg-violet-600 font-semibold'>
-                                {index}
+                            unseenMessages[user._id] > 0 && <p className='text-xs w-5 h-5 flex-shrink-0 flex justify-center items-center rounded-full bg-violet-600 font-semibold'>
+                                {unseenMessages[user._id]}
                             </p>
                         }
                     </div>
