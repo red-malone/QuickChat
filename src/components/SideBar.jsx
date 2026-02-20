@@ -1,12 +1,16 @@
-import React, { useContext } from 'react'
+import React, { useContext ,useState} from 'react'
 import assets ,{userDummyData}from '../assets/assets'
 import { useNavigate } from 'react-router-dom'
 import clsx from 'clsx'
 import { AuthContext } from '../../context/AuthContext'
+import { ChatContext } from '../../context/ChatContext'
 
 const SideBar = ({selectedUser,setSelectedUser}) => {
   const navigate=useNavigate();
-  const { logout } = useContext(AuthContext);
+  const { logout,onlineUsers } = useContext(AuthContext);
+  const { unseenMessages,getUsers,selectedUser,setSelectedUser,users,setUnseenMessages } = useContext(ChatContext);
+  const [input ,setInput]=useState(false);
+  const filteredUsers=input ? users.filter((user) => user.fullName.toLowerCase().includes(input.toLowerCase())) : users;
   return (
     <div className={clsx('bg-[#8185B2]/10 h-full flex flex-col border-r border-gray-700', selectedUser && 'max-md:hidden')}>
         {/* Header Section */}
@@ -29,6 +33,7 @@ const SideBar = ({selectedUser,setSelectedUser}) => {
           <div className='bg-[#282142] rounded-full flex items-center gap-3 py-3 px-4 border border-gray-700'>
             <img src={assets.search_icon} alt="Search" className='w-4 flex-shrink-0' />
             <input 
+            onChange={(e) => setInput(e.target.value)}
               type="text" 
               className='bg-transparent border-none outline-none text-white text-sm placeholder-gray-500 flex-1 w-full' 
               placeholder='Search User'
